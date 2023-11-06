@@ -36,7 +36,7 @@ app.get("/todos/", async (request, response) => {
     priority = "",
     status = "",
     category = "",
-    dueDate = "",
+    due_date = "",
   } = request.query;
   const todoCheckArray = [];
   const priorityCheckArray = ["HIGH", "MEDIUM", "LOW", ""];
@@ -66,10 +66,24 @@ app.get("/todos/", async (request, response) => {
     response.send(getWithFilter);
   } else {
     if (!priorityCheck) {
-      console.log("involid priority");
+      response.send("involid priority");
+      response.status(400);
     }
     if (!categoryCheck) {
-      console.log("involid category");
+      response.send("involid category");
+      response.status(400);
     }
   }
+});
+
+//API 2 get data with path parameters
+app.get("/todos/:todoId/", async (request, response) => {
+  const { todoId } = request.params;
+  const getWithPathParamQuery = `
+  select * 
+  FROM todo
+  Where id = ${todoId}
+  `;
+  const getWithPathParam = await db.get(getWithPathParamQuery);
+  response.send(getWithPathParam);
 });
