@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
-const fnsdate = require("date-fns");
+const { format } = require("date-fns");
 
 const dbPath = path.join(__dirname, "todoApplication.db");
 
@@ -86,4 +86,26 @@ app.get("/todos/:todoId/", async (request, response) => {
   `;
   const getWithPathParam = await db.get(getWithPathParamQuery);
   response.send(getWithPathParam);
+});
+
+// API 3 get method  path agenda
+// work with date and time import the NPM module of date-fns
+
+app.get("/agenda/", async (request, response) => {
+  const { date } = request.query;
+  const orgDate = new Date(date);
+
+  const paraYear = format(orgDate, "yyyy");
+  const paraMonth = format(orgDate, "MM");
+  const paraDate = format(orgDate, "dd");
+
+  const getAgendaQuery = `
+    SELECT *
+    FROM todo
+    WHERE due_date = ?`;
+
+  const formattedDate = `${paraYear}-${paraMonth}-${paraDate}`;
+  const getAgenda = await db.all(getAgendaQuery, formattedDate);
+
+  response.send(getAgenda);
 });
