@@ -93,15 +93,20 @@ app.get("/todos/:todoId/", async (request, response) => {
 
 app.get("/agenda/", async (request, response) => {
   const { date } = request.query;
-
+  const givenDate = new Date(date);
   var isDate = isValid(new Date(date));
-  if (isDate) {
-    const filterWithDateQuery = `
-      select *
-      from todo
-      where due_date = '${format(new Date(date), "yyyy,MM,dd")}'
-      `;
-    const filterWithDate = await db.all(filterWithDateQuery);
-    response.send(filterWithDate);
-  }
+  console.log(isDate);
+  console.log(givenDate);
+  console.log(givenDate.getFullYear());
+  console.log(givenDate.getMonth() + 1);
+  console.log(givenDate.getDate());
+  //   if (isDate) {
+  //     const filterWithDateQuery = `
+  //       select *
+  //       from todo
+  //       where priority = '${"HIGH"}'
+  //       `;
+  //     const filterWithDate = await db.all(filterWithDateQuery);
+  //     response.send(typeof format(new Date(date), "yyyy,MM,dd"));
+  // }
 });
