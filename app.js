@@ -94,19 +94,18 @@ app.get("/todos/:todoId/", async (request, response) => {
 app.get("/agenda/", async (request, response) => {
   const { date } = request.query;
   const givenDate = new Date(date);
-  var isDate = isValid(new Date(date));
-  console.log(givenDate);
-  const year = givenDate.getFullYear();
-  const month = givenDate.getMonth();
-  const day = givenDate.getDate();
-  console.log(`${year}-${month}-${day}`);
+  var isDate = isValid(givenDate);
+
   if (isDate) {
     const filterWithDateQuery = `
         select *
         from todo
-        where due_date = ${givenDate}
+        where due_date = ?
         `;
-    const filterWithDate = await db.all(filterWithDateQuery);
+    const formatDate = `${givenDate.getFullYear()}-${
+      givenDate.getMonth() + 1
+    }-${givenDate.getDate()}`;
+    const filterWithDate = await db.all(filterWithDateQuery, [formatDate]);
     response.send(filterWithDate);
   } else {
     response.status(400);
@@ -145,4 +144,40 @@ app.post("/todos/", async (request, response) => {
   } catch (e) {
     response.send(e.message);
   }
+});
+
+//API 5 path with pathparameter /todos/:todoId/
+//http request method PUT
+
+app.put("/todos/:todoId/", async (request, response) => {
+  const { todoId } = request.params;
+  const getIdRowQuery = `
+      select *
+      from todo
+      where id = ${todoId};
+      `;
+
+  let getIdRow = await db.get(getIdRowQuery);
+
+  response.send(getIdRow);
+
+  const getTodo = getIdRow.todo;
+  const getpriority = getIdRow.priority;
+  const getstatus = getIdRow.status;
+  const getcategory = getIdRow.category;
+  const getdueDate = getIdRow.due_date;
+
+  let {
+    finalTodo,
+    finalpriority,
+    finalstatus,
+    finalCategory,
+    finalDate,
+  } = request.body;
+
+  console.log(finalTodo);
+  console.log(finalpriority);
+  console.log(finalstatus);
+  console.log(finalCategory);
+  console.log(finalDate);
 });
