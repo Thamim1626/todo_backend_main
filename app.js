@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
-const { isValid, format } = require("date-fns");
+const { parseISO, isValid, format } = require("date-fns");
 
 const dbPath = path.join(__dirname, "todoApplication.db");
 
@@ -111,5 +111,38 @@ app.get("/agenda/", async (request, response) => {
   } else {
     response.status(400);
     response.send("invalid date format");
+  }
+});
+
+//API 4 path todos method post
+app.post("/todos/", async (request, response) => {
+  try {
+    const { id, todo, priority, status, category, dueDate } = request.body;
+    const dateValid = isValid(new Date(dueDate));
+    if (dateValid) {
+      const dateObject = new Date(2012, 12, 12);
+      const todosPostQurey = `
+    insert into 
+    todo (id , todo , priority , status , category , due_date)
+    values(
+       ?,?,?,?,?,?
+    );
+    `;
+      const todosPost = await db.run(todosPostQurey, [
+        id,
+        todo,
+        priority,
+        status,
+        category,
+        `${dateObject.getFullYear()}-${
+          dateObject.getMonth() + 1
+        }-${dateObject.getDate()}`,
+      ]);
+      response.send("Todo Successfully Added");
+    } else {
+      response.status(400).send("invalid date formate");
+    }
+  } catch (e) {
+    response.send(e.message);
   }
 });

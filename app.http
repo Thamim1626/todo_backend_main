@@ -23,8 +23,21 @@ GET http://localhost:3000/todos/?search_q=Buy
 
 
 ###
-GET http://localhost:3000/todos/3
+GET http://localhost:3000/todos/8
 
 ###
 GET http://localhost:3000/agenda/?date=2021-02-22
 
+###
+
+POST http://localhost:3000/todos/
+content-type: application/json
+
+{
+  "id": 8,
+  "todo": "Finalize event theme",
+  "priority": "HIGH",
+  "status": "TO DO",
+  "category": "HOME",
+  "dueDate": "2021-02-22"
+}
