@@ -43,9 +43,12 @@ content-type: application/json
 }
 
 ###
-PUT http://localhost:3000/todos/2
+PUT http://localhost:3000/todos/4
 Content-Type: application/json  
 
 {
     "priority" : " MEDIUM"
 }
+
+###
+DELETE http://localhost:3000/todos/1 HTTP/1.1

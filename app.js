@@ -181,3 +181,21 @@ app.put("/todos/:todoId/", async (request, response) => {
   console.log(finalCategory);
   console.log(finalDate);
 });
+
+// API 6 delete method with pathparameters
+// path todos/:todoId/
+
+app.delete("/todos/:todoId", async (request, response) => {
+  try {
+    let { todoId } = request.params;
+    todoId = parseInt(todoId);
+    const deleteItemsQuery = `
+  delete from todo
+  where id = ${todoId}
+  `;
+    const deleteItems = await db.run(deleteItemsQuery);
+    response.send("deleted successfully");
+  } catch (e) {
+    response.send(e.message);
+  }
+});
