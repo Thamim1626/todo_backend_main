@@ -26,4 +26,4 @@ GET http://localhost:3000/todos/?search_q=Buy
 GET http://localhost:3000/todos/3
 
 ###
-GET http://localhost:3000/agenda/?date=2021-09-22
+GET http://localhost:3000/agenda/

@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const path = require("path");
-const { format } = require("date-fns");
+const { isValid, format } = require("date-fns");
 
 const dbPath = path.join(__dirname, "todoApplication.db");
 
@@ -93,19 +93,15 @@ app.get("/todos/:todoId/", async (request, response) => {
 
 app.get("/agenda/", async (request, response) => {
   const { date } = request.query;
-  const orgDate = new Date(date);
 
-  const paraYear = format(orgDate, "yyyy");
-  const paraMonth = format(orgDate, "MM");
-  const paraDate = format(orgDate, "dd");
-
-  const getAgendaQuery = `
-    SELECT *
-    FROM todo
-    WHERE due_date = ?`;
-
-  const formattedDate = `${paraYear}-${paraMonth}-${paraDate}`;
-  const getAgenda = await db.all(getAgendaQuery, formattedDate);
-
-  response.send(getAgenda);
+  var isDate = isValid(new Date(date));
+  if (isDate) {
+    const filterWithDateQuery = `
+      select *
+      from todo
+      where due_date = '${format(new Date(date), "yyyy,MM,dd")}'
+      `;
+    const filterWithDate = await db.all(filterWithDateQuery);
+    response.send(filterWithDate);
+  }
 });
